@@ -3,6 +3,9 @@ uuid = "f184ada9-02e0-483f-abae-e4618e095841"
 authors = ["Kyle Stewart <kyle.b.stewart.gr@dartmouth.edu> and contributors"]
 version = "0.1.0"
 
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
 [compat]
 julia = "1"
 
