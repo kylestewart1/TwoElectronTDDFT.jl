@@ -1,10 +1,10 @@
 module TwoElectronTDDFT
 
+export Ket, Bra, Operator, Potential, CrankNicholson, soft_coulomb, harmonic
+
 using LinearAlgebra
 
-include("abstract_types.jl")
-include("operator.jl")
-include("Potential.jl")
-include("Hamiltonian.jl")
-
+include("QuantumObject.jl")
+include("potentials.jl")
+include("Propagator.jl")
 end
