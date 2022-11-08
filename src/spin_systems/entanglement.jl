@@ -38,7 +38,6 @@ function partial_trace(M::Matrix, which_qubit::Int)
 end
 
 function partial_trace(M::Matrix, which_qubits::Vector{Int})
-    n_qubits = Int(log(2,size(M)[1]))
     which_qubits = sort(which_qubits)
     pt = partial_trace(M, which_qubits[1])
     which_qubits .-= 1

@@ -46,7 +46,7 @@ function solve_for_fields(current_derivs, stress_tensor, internal_force_density,
         end
     end
     for i in 1:(n_qubits-1)
-        h[i+1] = h[i] - δh[i]
+        h[i+1] = h[i] + δh[i]
     end
     return h
 end

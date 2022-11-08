@@ -68,7 +68,7 @@ function spin_hamiltonian_add_fields(n_qubits, hz, hx=nothing, hy=nothing)
     if hy !== nothing
         H_ext += external_field(n_qubits, hy, Y)
     end
-    return H_ext
+    return -H_ext
 end
 
 
