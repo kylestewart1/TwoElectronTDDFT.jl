@@ -202,3 +202,119 @@ function time_dependent_expectation_values(Ψ_t, operators::Array{Number, 4})
     return expectation_t 
 end
 
+
+function hadamard_operator(n_qubits)
+    H1 = (1/sqrt(2)) * [1 1; 1 -1]
+    H = copy(H1)
+    for i in 1:(n_qubits-1)
+        H =  kron(H, H1)
+    end
+    return H
+end
+
+function nearest_neighbor(J_list::Vector)
+    n_qubits = size(J_list)[1]+1
+    J = zeros((n_qubits,n_qubits))
+    for i in 1:(n_qubits-1)
+        J[i,i+1] = J_list[i]
+        J[i+1,i] = J_list[i]
+    end
+    return J
+end
+
+function rotation_matrix(θ::Float64, n::Vector)
+    n ./= norm(n)
+    R = cos(θ/2)*I - im*sin(θ/2)*(n[1]*X + n[2]*Y + n[3]*Z)
+    return R
+end
+
+function rotation_matrix(θ::Float64, n::Vector, n_qubits::Int)
+    R_1 = rotation_matrix(θ, n)
+    R_N = R_1
+    for i in 1:(n_qubits-1)
+        R_N = kron(R_1, R_N)
+    end
+    return R_N
+end
+
+import Base.round
+function round(A::Array{ComplexF64}, ϵ=1e-8)
+    B = copy(A)
+    for i in eachindex(B)
+        x, y = real(B[i]), imag(B[i])
+        if abs(x) < ϵ
+            x = 0.0
+        end
+        if abs(y) < ϵ
+            y = 0.0
+        end
+        B[i] = x + y*im
+    end
+    return B
+end
+
+function pauli_change_basis(paulis, M::AbstractMatrix)
+    new_paulis = Dict("x" => [], "y" => [], "z" => [])
+    for α in eachindex(paulis)
+        for i in eachindex(paulis[α])
+            push!(new_paulis[α], sum(M[i,:] .* paulis[α]))
+        end
+    end
+    return new_paulis
+end
+"""
+function new_pauli_Z(paulis, M::AbstractMatrix)
+    new_Zs = []
+    n_qubits = length(paulis["z"])
+    for i in eachindex(paulis["z"])
+        Z_new = zeros(size(paulis["z"][1]))
+        for k in 1:n_qubits, l in 1:n_qubits
+            Z_new += (-1/2) * M[i,k]*conj(M[i,l])*(paulis["x"][k]*paulis["x"][l] 
+                    + paulis["y"][k]*paulis["y"][l])
+        end
+        push!(new_Zs, Z_new)
+    end
+    return new_Zs
+end
+"""
+
+function new_pauli_Z(paulis, U::AbstractMatrix)
+    new_Zs = []
+    n_qubits = length(paulis["z"])
+    for i in eachindex(paulis["z"])
+        Z_new = zeros(size(paulis["z"][1]))
+        for l in 1:n_qubits
+            for k in 1:(l-1)
+                term = (-1/2) * U[i,k]*conj(U[i,l])*(paulis["x"][k] + im*paulis["y"][k])
+                for m in (k+1):(l-1)
+                    term *= paulis["z"][m]
+                end
+                term *= (paulis["x"][l] - im*paulis["y"][l])
+                Z_new += term
+            end
+            for k in (l+1):n_qubits
+                term = (-1/2) * U[i,k]*conj(U[i,l])*(paulis["x"][l] - im*paulis["y"][l])
+                for m in (l+1):(k-1)
+                    term *= paulis["z"][m]
+                end
+                term *= (paulis["x"][k] + im*paulis["y"][k])
+                Z_new += term
+            end
+        end
+        for k in 1:n_qubits
+            Z_new += U[i,k]*conj(U[i,k])*paulis["z"][k]
+        end
+
+        push!(new_Zs, Z_new)
+    end
+    return new_Zs
+end
+
+
+function swap_col!(M::Matrix, i, j)
+    for k in axes(M)[1]
+        idata = M[k,i]
+        M[k,i] = M[k,j]
+        M[k,j] = idata
+    end
+end

@@ -4,6 +4,7 @@ authors = ["Kyle Stewart <kyle.b.stewart.gr@dartmouth.edu> and contributors"]
 version = "0.1.0"
 
 [deps]
+CurveFit = "5a033b19-8c74-5913-a970-47c3779ef25c"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"

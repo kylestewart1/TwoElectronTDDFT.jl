@@ -9,22 +9,23 @@ function ground_state(energies, eigenstates)
 end
 
 
-function heisenberg_energy(Z_exp, J_par, n_qubits)
+function heisenberg_energy(Z_exp, J_par_list)
     E_H = 0.0
+    n_qubits = length(J_par_list) - 1
     for i in 1:(n_qubits-1)
-        E_H += J_par[i,i+1] * Z_exp[i] * Z_exp[i+1]
+        E_H += J_par_list[i] * Z_exp[i] * Z_exp[i+1]
     end
     return E_H
 end
 
 function external_field_energy(Z_exp, h)
-    return -sum(h .* Z_exp)
+    return sum(h .* Z_exp)
 end
 
-function XY_kinetic_energy(X_exp, Y_exp, J_perp)
+function XY_kinetic_energy(X_exp, Y_exp, J_perp_list)
     T_s = 0.0
     for i in 1:(n_qubits-1)
-        T_s += J_perp[i,i+1] * (X_exp[i]X_exp[i+1] + Y_exp[i]Y_exp[i+1])
+        T_s += J_perp_list[i] * (X_exp[i]X_exp[i+1] + Y_exp[i]Y_exp[i+1])
     end
     return T_s
 end
@@ -48,3 +49,4 @@ function heisenberg_fields(Z_exp, J_par, n_qubits)
     end
     return -h_H
 end
+
