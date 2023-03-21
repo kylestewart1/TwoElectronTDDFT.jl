@@ -8,6 +8,12 @@ J_perp = nearest_neighbor(J_perp_list)
 uniform_Z = LinRange(-1.0,1.0,100)
 scaling = [-10.0, -1.0, 0.0, 1.0, 10.0, 100.0]
 E = energy_functional(n_qubits, J_perp, scaling, uniform_Z)
+kinetic = E[3]
+
+E_hc = []
+for i in eachindex(E)
+    push!(E_hc, E[i] .- kinetic)
+end
 
 
 using Plots
@@ -21,7 +27,14 @@ ylabel!("Energy")
 title!("Exact energy")
 display(energy_func_plt) 
 
-
+hc_func_plt = plot(uniform_Z, E_hc[1], label=scaling[1])
+for i in 2:(size(E_hc)[1])
+    plot!(uniform_Z, E_hc[i], label=scaling[i])
+end
+xlabel!("σᶻ")
+ylabel!("E_hc")
+title!("Heisenberg plus correlation energy")
+display(hc_func_plt) 
 
 """
 using CurveFit
